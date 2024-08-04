@@ -37,4 +37,4 @@ set.timeoutlen = 400
 set.ttimeoutlen = 400
 
 set.undofile = true
-set.undodir = '~/.vim/undodir'
+set.undodir = "/Users/syh/.vim/undodir"
