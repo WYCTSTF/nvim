@@ -1,6 +1,12 @@
 local map = vim.api.nvim_set_keymap
 local opt = { noremap = true, silent = true }
 
+map("n", "s", "", opt)
+map("n", "sv", ":vsp<CR>", opt)
+map("n", "sh", ":sp<CR>", opt)
+map("n", "sc", "<C-w>c", opt)
+map("n", "so", "<C-w>o", opt)
+
 map("n", "<C-Left>", ":vertical resize -2<CR>", opt)
 map("n", "<C-Right>", ":vertical resize +2<CR>", opt)
 map("n", "s,", ":vertical resize -20<CR>", opt)
