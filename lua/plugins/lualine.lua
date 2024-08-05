@@ -2,6 +2,7 @@ return {
   "nvim-lualine/lualine.nvim",
   event = "VeryLazy",
   init = function()
+    require('transparent').clear_prefix('lualine')
     vim.g.lualine_laststatus = vim.o.laststatus
     if vim.fn.argc(-1) > 0 then
       -- set an empty statusline till lualine loads
@@ -107,7 +108,6 @@ return {
     --     end,
     --   })
     -- end
-    require('transparent').clear_prefix('lualine')
     return opts
   end,
 }
