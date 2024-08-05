@@ -19,7 +19,7 @@ return {
 
     local opts = {
       options = {
-        theme = "auto",
+        theme = 'ayu_light',
         globalstatus = vim.o.laststatus == 3,
         disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter" } },
       },
@@ -107,7 +107,7 @@ return {
     --     end,
     --   })
     -- end
-
+    require('transparent').clear_prefix('lualine')
     return opts
   end,
 }
