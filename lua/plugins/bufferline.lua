@@ -1,10 +1,13 @@
 return {
   "akinsho/bufferline.nvim",
+  dependencies = {
+    "moll/vim-bbye",
+  },
   event = "VeryLazy",
   keys = {
     { "<C-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
     { "<C-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
-    { "<C-w>", ":bdelete!<cr>", desc = "close current Buffer" },
+    { "<C-w>", ":Bdelete!<cr>", desc = "close current Buffer" },
   },
   opts = {
     options = {
