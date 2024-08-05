@@ -11,8 +11,10 @@ return {
   },
   opts = {
     options = {
-      close_command = function(n) vim.ui.bufremove(n) end,
-      right_mouse_command = function(n) vim.ui.bufremove(n) end,
+      -- close_command = function(n) vim.ui.bufremove(n) end,
+      -- right_mouse_command = function(n) vim.ui.bufremove(n) end,
+      close_command = "Bdelete! %d",
+      right_mouse_command = "Bdelete! %d",
       always_show_bufferline = false,
       offsets = {
         {
@@ -24,14 +26,14 @@ return {
       },
     },
   },
-  config = function(_, opts)
-    require("bufferline").setup(opts)
-    vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
-      callback = function()
-        vim.schedule(function()
-          pcall(nvim_bufferline)
-        end)
-      end,
-    })
-  end,
+  -- config = function(_, opts)
+  --   require("bufferline").setup(opts)
+  --   vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
+  --     callback = function()
+  --       vim.schedule(function()
+  --         pcall(nvim_bufferline)
+  --       end)
+  --     end,
+  --   })
+  -- end,
 }
