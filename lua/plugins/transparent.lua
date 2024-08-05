@@ -6,6 +6,8 @@ return {
     extra_groups = {
       'NeoTreeNormal',
       'NeoTreeNromalNC',
+      'LazyNormal',
+      'MasonNormal',
     },
   },
   -- config = function(_, opts)
