@@ -3,9 +3,6 @@ return {
   main = "ibl",
   opts = function()
     return {
-      indent = {
-        highlight = highlight
-      },
       scope = {
         show_start = false,
         show_end = false
