@@ -38,3 +38,5 @@ set.ttimeoutlen = 400
 
 set.undofile = true
 set.undodir = "/Users/syh/.vim/undodir"
+set.shell = "/opt/homebrew/bin/bash"
+vim.g.python3_host_prog = '/opt/homebrew/Caskroom/miniconda/base/bin/python'
