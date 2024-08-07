@@ -18,6 +18,7 @@ map("n", "<C-Down>", ":resize +2<CR>", opt)
 map("n", "<C-Up>", ":resize -2<CR>", opt)
 
 map("n", "<leader>wq", ":wqa<CR>", opt)
+map("n", "<esc", ":noh<CR>", opt)
 
 map("v", "<", "<gv", opt)
 map("v", ">", ">gv", opt)
