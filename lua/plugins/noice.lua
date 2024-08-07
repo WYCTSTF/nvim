@@ -27,6 +27,9 @@ return {
       command_palette = true,
       long_message_to_split = true,
     },
+    views = {
+      cmdline_popup = { position = { row = 0, col = -2 }, relative = 'cursor' },
+    },
   },
   dependencies = {
     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
