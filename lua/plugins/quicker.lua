@@ -3,7 +3,7 @@ return {
   opts = {},
   config = function()
     vim.keymap.set("n", "<leader>q", function()
-      require('quicker').toggle()
+      vim.diagnostic.setloclist()
     end, {
       desc = "Toggle quickfix",
     })
