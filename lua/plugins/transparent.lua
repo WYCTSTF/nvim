@@ -9,6 +9,11 @@ return {
       'LazyNormal',
       'MasonNormal',
     },
+    exclude_groups = {
+      'IndentBlankineChar',
+      'IndentBlankineContextChar',
+      'IndentBlanklineContextStart'
+    },
   },
   -- config = function(_, opts)
   --   local autogroup = vim.api.nvim_create_augroup("transparent", { clear = true })
