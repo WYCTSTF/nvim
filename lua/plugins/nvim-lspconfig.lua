@@ -53,15 +53,22 @@ return {
         end
       end
     })
+    require("lspconfig").clangd.setup{
+      cmd = {
+        "/home/syh/clang+llvm-18.1.8-aarch64-linux-gnu/bin/clangd",
+        "--header-insertion=never",
+        "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
+      },
+    }
 
     local servers = {
-      clangd = {
-        cmd = {
-          "/opt/homebrew/opt/llvm/bin/clangd",
-          "--header-insertion=never",
-          "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
-        }
-      },
+      -- clangd = {
+      --   cmd = {
+      --     "/home/syh/clang+llvm-18.1.8-aarch64-linux-gnu/bin/clangd",
+      --     "--header-insertion=never",
+      --     "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
+      --   }
+      -- },
       lua_ls = {
         settings = {
           Lua = {
@@ -84,7 +91,8 @@ return {
 
     require('mason').setup()
 
-    local ensure_installed = vim.tbl_keys(servers or {})
+    -- local ensure_installed = vim.tbl_keys(servers or {})
+    local ensure_installed = vim.tbl_keys({})
 
     vim.list_extend(ensure_installed, {
       'stylua',
