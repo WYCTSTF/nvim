@@ -23,11 +23,14 @@ return {
             width = 0.9,
           },
         },
+        file_ignore_patterns = { 
+          "node_modules" 
+        }
       },
       pickers = {
         find_files = {
           theme = 'ivy',
-          no_ignore = true,
+          -- no_ignore = true,
         }
       }
     }
