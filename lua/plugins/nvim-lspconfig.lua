@@ -60,6 +60,14 @@ return {
         "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
       },
     }
+    require("lspconfig").pyright.setup{
+      cmd = {
+        "delance-langserver", "--stdio"
+      },
+      root_dir = function(...)
+        return vim.fn.getcwd()
+      end,
+    }
 
     local servers = {
       -- clangd = {
@@ -81,12 +89,12 @@ return {
           },
         },
       },
-      pyright = {
-        cmd = { "delance-langserver", "--stdio" }, -- pylance
-        root_dir = function(...)
-          return vim.fn.getcwd()
-        end,
-      },
+      --pyright = {
+      --  cmd = { "delance-langserver", "--stdio" }, -- pylance
+      --  root_dir = function(...)
+      --    return vim.fn.getcwd()
+      --  end,
+      --},
     }
 
     require('mason').setup()
