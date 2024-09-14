@@ -8,6 +8,8 @@ return {
       'NeoTreeNromalNC',
       'LazyNormal',
       'MasonNormal',
+      'TroubleNormal',
+      'TroubleNormalNc',
     },
     exclude_groups = {
       'IndentBlankineChar',
