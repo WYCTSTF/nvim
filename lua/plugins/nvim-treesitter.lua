@@ -2,7 +2,7 @@ return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
   opts = {
-    highlight = { enable = true },
+    highlight = { enable = false },
     -- Code Indentation
     indent = {enable = true },
     ensure_installed = {

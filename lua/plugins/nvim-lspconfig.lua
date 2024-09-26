@@ -59,6 +59,11 @@ return {
         "--header-insertion=never",
         "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
       },
+      on_attach = function(client, bufnr)
+        if client.server_capabilities.semanticTokensProvider then
+          vim.lsp.semantic_tokens.start(bufnr, client.id)
+        end
+      end,
     }
     require("lspconfig").pyright.setup{
       cmd = {
@@ -66,6 +71,11 @@ return {
       },
       root_dir = function(...)
         return vim.fn.getcwd()
+      end,
+      on_attach = function(client, bufnr)
+        if client.server_capabilities.semanticTokensProvider then
+          vim.lsp.semantic_tokens.start(bufnr, client.id)
+        end
       end,
     }
 
