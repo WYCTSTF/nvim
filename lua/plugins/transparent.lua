@@ -10,6 +10,7 @@ return {
       'MasonNormal',
       'TroubleNormal',
       'TroubleNormalNc',
+      'NormalFloat',
     },
     exclude_groups = {
       'IndentBlankineChar',
