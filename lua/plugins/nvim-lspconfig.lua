@@ -56,7 +56,7 @@ return {
     require("lspconfig").clangd.setup{
       cmd = {
         "/home/syh/clang+llvm-18.1.8-aarch64-linux-gnu/bin/clangd",
-        "--header-insertion=never",
+        -- "--header-insertion=never",
         "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
       },
       on_attach = function(client, bufnr)
