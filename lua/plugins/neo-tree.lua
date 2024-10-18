@@ -33,6 +33,11 @@ return {
             return
           end
           neo_tree.setup({
+            popup_border_style = "NC",
+            -- use_popups_for_input = false,
+            window = {
+              position = "float",
+            },
             sources = { "filesystem", "buffers", "git_status" },
             open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
             filesystem = {
