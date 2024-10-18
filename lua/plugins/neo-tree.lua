@@ -33,8 +33,8 @@ return {
             return
           end
           neo_tree.setup({
-            popup_border_style = "NC",
-            -- use_popups_for_input = false,
+            popup_border_style = "rounded",
+            use_popups_for_input = false,
             window = {
               position = "float",
             },
