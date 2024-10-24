@@ -7,6 +7,7 @@ return {
   keys = {
     { "<C-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
     { "<C-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+    { "<C-]>", ":b#<cr>", desc = "Last Buffer" },
     { "<C-w>", ":Bdelete!<cr>", desc = "close current Buffer" },
   },
   opts = {
