@@ -2,7 +2,11 @@ return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
   opts = {
-    highlight = { enable = false },
+    highlight = { 
+      enable = true ,
+      disable = { "latex" },
+      additional_vim_regex_highlighting = { "latex", "markdown" },
+    },
     -- Code Indentation
     indent = {enable = true },
     ensure_installed = {
