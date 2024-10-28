@@ -55,9 +55,11 @@ return {
     })
     require("lspconfig").clangd.setup{
       cmd = {
-        "/home/syh/clang+llvm-18.1.8-aarch64-linux-gnu/bin/clangd",
+        "/home/syh/llvm-mingw/bin/clangd",
+        -- "--log=verbose",
         -- "--header-insertion=never",
-        "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
+        "--completion-style=detailed",
+        "--query-driver=/home/syh/llvm-mingw/bin/clang*",
       },
       on_attach = function(client, bufnr)
         if client.server_capabilities.semanticTokensProvider then
