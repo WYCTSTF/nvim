@@ -36,11 +36,11 @@ return {
     }
     pcall(require('telescope').load_extension, 'fzf')
     pcall(require('telescope').load_extension, 'ui-select')
-    pcall(require('telescope').load_extension, 'rest')
+    -- pcall(require('telescope').load_extension, 'rest')
 
     -- See `:help telescope.builtin`
     local builtin = require 'telescope.builtin'
-    local rest = require("telescope").extensions.rest
+    -- local rest = require("telescope").extensions.rest
     -- vim.keymap.set('n', '<leader>fh', builtin.help_tags)
     -- vim.keymap.set('n', '<leader>fk', builtin.keymaps)
     vim.keymap.set('n', '<leader>ff', builtin.find_files)
@@ -50,7 +50,7 @@ return {
     vim.keymap.set('n', '<leader>fd', builtin.diagnostics)
     vim.keymap.set('n', '<leader>fo', builtin.oldfiles)
     vim.keymap.set('n', '<leader>fn', ":Telescope notify<cr>")
-    vim.keymap.set('n', '<leader>fr', rest.select_env)
+    -- vim.keymap.set('n', '<leader>fr', rest.select_env)
     -- vim.keymap.set('n', '<leader>fr', builtin.resume)
     -- vim.keymap.set('n', '<leader>f.', builtin.oldfiles)
     vim.keymap.set('n', '<leader><leader>', builtin.buffers)
