@@ -1,7 +1,8 @@
 return {
   'xiyaowong/transparent.nvim',
   event = 'VimEnter',
-  priority = 51,
+  lazy = false,
+  priority = 9,
   opts = {
     extra_groups = {
       'NeoTreeNormal',
@@ -12,6 +13,12 @@ return {
       'TroubleNormalNc',
       'NormalFloat',
       'NormalSB',
+      "BufferLineFill",
+      "BufferLineBackground",
+      "BufferLineTab",
+      "BufferLineTabClose",
+      "BufferLineCloseButton",
+      "BufferLineSeparator",
     },
     exclude_groups = {
       'IndentBlankineChar',

@@ -3,7 +3,8 @@ return {
   dependencies = {
     "moll/vim-bbye",
   },
-  event = "VeryLazy",
+  lazy = false,
+  priority = 8,
   keys = {
     { "<C-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
     { "<C-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },

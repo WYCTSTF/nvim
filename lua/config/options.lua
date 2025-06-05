@@ -37,6 +37,6 @@ set.timeoutlen = 400
 set.ttimeoutlen = 400
 
 set.undofile = true
-set.undodir = "/home/syh/.vim/undodir"
-vim.g.python3_host_prog = '/home/syh/miniconda3/bin/python'
+set.undodir = "/Users/syh/.vim/undodir"
+vim.g.python3_host_prog = '/opt/homebrew/Caskroom/miniconda/base/bin/python'
 -- set.clipboard='unnamedplus'
