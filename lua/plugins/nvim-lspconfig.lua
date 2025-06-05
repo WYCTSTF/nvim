@@ -99,18 +99,12 @@ return {
           },
         },
       },
-      --pyright = {
-      --  cmd = { "delance-langserver", "--stdio" }, -- pylance
-      --  root_dir = function(...)
-      --    return vim.fn.getcwd()
-      --  end,
-      --},
     }
 
     require('mason').setup()
 
     -- local ensure_installed = vim.tbl_keys(servers or {})
-    local ensure_installed = vim.tbl_keys({})
+    local ensure_installed = vim.tbl_keys(servers)
 
     vim.list_extend(ensure_installed, {
       'stylua',
