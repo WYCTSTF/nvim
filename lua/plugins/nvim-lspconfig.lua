@@ -31,19 +31,40 @@ return {
       -- 示例：若用 cmp，可合并 capabilities
       -- capabilities = require("cmp_nvim_lsp").default_capabilities(),
       -- root_markers = { ".git" },
-    })
-
-    ------------------------------------------------------------------
+    })    ------------------------------------------------------------------
     -- 3. 逐服务器配置
     ------------------------------------------------------------------
-    -- clangd：自定义二进制路径 & 启动参数
-    vim.lsp.config("clangd", {
-      cmd = {
-        "/opt/homebrew/opt/llvm/bin/clangd",
-        "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
-      },
+    -- 操作系统检测函数
+    local function is_windows()
+      return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1
+    end
+
+    local function is_mac()
+      return vim.fn.has('macunix') == 1
+    end
+
+    -- clangd：根据操作系统自定义二进制路径 & 启动参数
+    local clangd_config = {
       root_markers = { ".clangd", "compile_commands.json", ".git" },
-    })
+    }
+
+    if is_windows() then
+      clangd_config.cmd = {
+        "D:/Program Files/llvm-mingw-20250528-ucrt-x86_64/bin/clangd.exe",
+        "--query-driver=D:/Program Files/llvm-mingw-20250528-ucrt-x86_64/bin/clang*.exe",
+        "--header-insertion=never", -- 禁用自动插入头文件
+      }
+    elseif is_mac() then
+      clangd_config.cmd = {
+        "/opt/homebrew/opt/llvm/bin/clangd",
+        "--query-driver=/opt/homebrew/opt/llvm/bin/clang*",
+      }
+    else
+      -- 其他系统，使用系统默认路径
+      clangd_config.cmd = { "clangd" }
+    end
+
+    vim.lsp.config("clangd", clangd_config)
 
     -- lua-language-server：让 'vim' 不再被诊断为未定义
     vim.lsp.config("lua_ls", {
