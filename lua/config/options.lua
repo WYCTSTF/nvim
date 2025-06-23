@@ -37,6 +37,51 @@ set.timeoutlen = 400
 set.ttimeoutlen = 400
 
 set.undofile = true
-set.undodir = "/Users/syh/.vim/undodir"
-vim.g.python3_host_prog = '/opt/homebrew/Caskroom/miniconda/base/bin/python'
+
+-- 检测操作系统并设置相应的路径
+local function is_windows()
+  return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1
+end
+
+local function is_mac()
+  return vim.fn.has('macunix') == 1
+end
+
+-- 根据操作系统设置undodir
+if is_windows() then
+  set.undodir = vim.fn.expand("~/.vim/undodir")
+else
+  set.undodir = "/home/syh/.vim/undodir"
+end
+
+-- 根据操作系统设置Python路径
+if is_windows() then
+  -- Windows系统，尝试常见的Python路径
+  local python_paths = {
+    vim.fn.expand("D:/Program Files/miniconda/python.exe"),
+  }
+  
+  for _, path in ipairs(python_paths) do
+    if vim.fn.executable(path) == 1 then
+      vim.g.python3_host_prog = path
+      break
+    end
+  end
+elseif is_mac() then
+  -- macOS系统
+  local python_paths = {
+    "/opt/homebrew/Caskroom/miniconda/base/bin/python",  -- 如果使用相同的conda环境
+  }
+  
+  for _, path in ipairs(python_paths) do
+    if vim.fn.executable(path) == 1 then
+      vim.g.python3_host_prog = path
+      break
+    end
+  end
+else
+  -- Linux系统
+  vim.g.python3_host_prog = '/home/syh/miniconda3/bin/python'
+end
+
 -- set.clipboard='unnamedplus'
