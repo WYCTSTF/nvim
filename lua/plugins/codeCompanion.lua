@@ -1,5 +1,6 @@
 return {
   "olimorris/codecompanion.nvim",
+  event = "VimEnter",
   opts = {
     strategies = {
       chat = {
