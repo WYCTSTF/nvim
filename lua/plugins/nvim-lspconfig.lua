@@ -1,125 +1,122 @@
 return {
+  -- ★ 仍然需要 nvim-lspconfig 提供默认配置
   "neovim/nvim-lspconfig",
+
   dependencies = {
-    { 'williamboman/mason.nvim', config = true },
-    'WhoIsSethDaniel/mason-tool-installer.nvim',
-    'williamboman/mason-lspconfig.nvim',
-    { 'j-hui/fidget.nvim', opts = {} },
+    { "mason-org/mason.nvim",          opts = {} }, -- v2+
+    { "mason-org/mason-lspconfig.nvim", opts = {} }, -- 自动 enable LSP
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    { "j-hui/fidget.nvim", opts = {} },
   },
+
   config = function()
-    vim.api.nvim_create_autocmd('LspAttach', {
-      group = vim.api.nvim_create_augroup('vim-lsp-attach', { clear = true }),
-      callback = function(event)
-        local map = function(keys, func)
-          vim.keymap.set('n', keys, func, { buffer = event.buf })
-        end
-        local builtin = require 'telescope.builtin'
-        map('gd', builtin.lsp_definitions)
-        map('gD', vim.lsp.buf.declaration)
-        map('gr', builtin.lsp_references)
-        map('gI', builtin.lsp_implementations)
-        map('<leader>rn', vim.lsp.buf.rename)
-        map('<leader>ca', vim.lsp.buf.code_action)
-        map('gk', vim.diagnostic.goto_prev)
-        map('gj', vim.diagnostic.goto_next)
-        local client = vim.lsp.get_client_by_id(event.data.client_id)
-        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-          local highlight_augroup = vim.api.nvim_create_augroup('vim-lsp-highlight', { clear = true})
-          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-            buffer = event.buf,
-            group = highlight_augroup,
-            callback = vim.lsp.buf.document_highlight,
-          })
+    ------------------------------------------------------------------
+    -- 1. Mason —— 安装服务器 / 工具
+    ------------------------------------------------------------------
+    require("mason").setup()
 
-          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-            buffer = event.buf,
-            group = highlight_augroup,
-            callback = vim.lsp.buf.clear_references,
-          })
+    require("mason-tool-installer").setup {
+      ensure_installed = {
+        -- LSP
+        "lua_ls",
+        -- 其他 CLI 工具
+        "stylua",
+      },
+    }
 
-          vim.api.nvim_create_autocmd('LspDetach', {
-            group = vim.api.nvim_create_augroup('vim-lsp-detach', { clear = true }),
-            callback = function(event2)
-              vim.lsp.buf.clear_references()
-              vim.api.nvim_clear_autocmds { group = 'vim-lsp-highlight', buffer = event2.buf }
-            end,
-          })
-        end
-
-        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-          map('<leader>th', function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-          end)
-        end
-      end
+    ------------------------------------------------------------------
+    -- 2. 全局 LSP 覆写（对所有服务器生效）
+    ------------------------------------------------------------------
+    vim.lsp.config("*", {
+      -- 示例：若用 cmp，可合并 capabilities
+      -- capabilities = require("cmp_nvim_lsp").default_capabilities(),
+      -- root_markers = { ".git" },
     })
-    require("lspconfig").clangd.setup{
+
+    ------------------------------------------------------------------
+    -- 3. 逐服务器配置
+    ------------------------------------------------------------------
+    -- clangd：自定义二进制路径 & 启动参数
+    vim.lsp.config("clangd", {
       cmd = {
-        "/home/syh/clang+llvm-18.1.8-aarch64-linux-gnu/bin/clangd",
-        -- "--header-insertion=never",
+        "/opt/homebrew/opt/llvm/bin/clangd",
         "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
       },
-      on_attach = function(client, bufnr)
-        if client.server_capabilities.semanticTokensProvider then
-          vim.lsp.semantic_tokens.start(bufnr, client.id)
-        end
-      end,
-    }
-    require("lspconfig").pyright.setup{
-      cmd = {
-        "delance-langserver", "--stdio"
-      },
-      root_dir = function(...)
-        return vim.fn.getcwd()
-      end,
-      on_attach = function(client, bufnr)
-        if client.server_capabilities.semanticTokensProvider then
-          vim.lsp.semantic_tokens.start(bufnr, client.id)
-        end
-      end,
-    }
+      root_markers = { ".clangd", "compile_commands.json", ".git" },
+    })
 
-    local servers = {
-      -- clangd = {
-      --   cmd = {
-      --     "/home/syh/clang+llvm-18.1.8-aarch64-linux-gnu/bin/clangd",
-      --     "--header-insertion=never",
-      --     "--query-driver=/opt/homebrew/opt/llvm/bin/clang++",
-      --   }
-      -- },
-      lua_ls = {
-        settings = {
-          Lua = {
-            completion = {
-              callSnippet = 'Replace',
-            },
-            diagnostics = {
-              globals = { "vim" }
-            },
-          },
+    -- lua-language-server：让 'vim' 不再被诊断为未定义
+    vim.lsp.config("lua_ls", {
+      settings = {
+        Lua = {
+          completion = { callSnippet = "Replace" },
+          diagnostics = { globals = { "vim" } },
         },
       },
-    }
-
-    require('mason').setup()
-
-    -- local ensure_installed = vim.tbl_keys(servers or {})
-    local ensure_installed = vim.tbl_keys(servers)
-
-    vim.list_extend(ensure_installed, {
-      'stylua',
     })
-    require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+    -- pyright → delance（Pylance）替身
+    vim.lsp.config("pyright", {
+      cmd = { "delance-langserver", "--stdio" },
+      root_dir = vim.fn.getcwd(), -- 简单粗暴：始终使用当前目录
+    })
 
-    require('mason-lspconfig').setup {
-      handlers = {
-        function(server_name)
-          local server = servers[server_name] or {}
-          -- server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
-        end,
-      },
-    }
+    -- 其余服务器可继续追加...
+    ------------------------------------------------------------------
+    -- 4. 启用服务器
+    --    * 若只想手动控制，关闭 mason-lspconfig 的自动启用：
+    --        require("mason-lspconfig").setup { automatic_enable = false }
+    --      然后改用 vim.lsp.enable({...}) 自己启用
+    ------------------------------------------------------------------
+    -- 这里交给 mason-lspconfig 自动处理，无须再写 vim.lsp.enable()
+
+    ------------------------------------------------------------------
+    -- 5. LspAttach：按需绑定按键 / 特性
+    ------------------------------------------------------------------
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = vim.api.nvim_create_augroup("vim-lsp-attach", { clear = true }),
+      callback = function(event)
+        local map = function(keys, func)
+          vim.keymap.set("n", keys, func, { buffer = event.buf })
+        end
+        local builtin = require("telescope.builtin")
+        map("gd", builtin.lsp_definitions)
+        map("gD", vim.lsp.buf.declaration)
+        map("gr", builtin.lsp_references)
+        map("gI", builtin.lsp_implementations)
+        map("<leader>rn", vim.lsp.buf.rename)
+        map("<leader>ca", vim.lsp.buf.code_action)
+        map("gk", vim.diagnostic.goto_prev)
+        map("gj", vim.diagnostic.goto_next)
+
+        ----------------------------------------------------------------
+        -- documentHighlight / inlay hints
+        ----------------------------------------------------------------
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if client and client:supports_method("textDocument/documentHighlight") then
+          local hl = vim.api.nvim_create_augroup("vim-lsp-highlight", { clear = true })
+          vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+            group = hl,
+            buffer = event.buf,
+            callback = vim.lsp.buf.document_highlight,
+          })
+          vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+            group = hl,
+            buffer = event.buf,
+            callback = vim.lsp.buf.clear_references,
+          })
+        end
+
+        if client and client:supports_method("textDocument/inlayHint") then
+          map("<leader>th", function()
+            local bufnr = event.buf
+            vim.lsp.inlay_hint.enable(
+              not vim.lsp.inlay_hint.is_enabled { bufnr = bufnr },
+              { bufnr = bufnr }
+            )
+          end)
+        end
+      end,
+    })
   end,
 }
