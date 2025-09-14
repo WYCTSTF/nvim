@@ -50,7 +50,11 @@ end
 -- 根据操作系统设置undodir
 if is_windows() then
   set.undodir = vim.fn.expand("~/.vim/undodir")
+elseif is_mac() then
+  -- macOS系统，设置undodir路径
+  set.undodir = "/Users/syh/.vim/undodir"
 else
+  -- Linux系统，设置undodir路径
   set.undodir = "/home/syh/.vim/undodir"
 end
 
