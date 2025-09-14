@@ -29,3 +29,17 @@ map("n", "<M-h>", "<C-w>h", opt)
 map("n", "<M-j>", "<C-w>j", opt)
 map("n", "<M-k>", "<C-w>k", opt)
 map("n", "<M-l>", "<C-w>l", opt)
+
+-- Copilot key mappings (for github/copilot.vim)
+-- Accept Copilot suggestion with Ctrl+y
+map("i", "<C-y>", 'copilot#Accept("<CR>")', { expr = true, silent = true })
+
+-- Navigate through Copilot suggestions
+map("i", "<M-]>", "<Plug>(copilot-next)", opt)
+map("i", "<M-[>", "<Plug>(copilot-previous)", opt)
+
+-- Dismiss Copilot suggestion
+map("i", "<C-e>", "<Plug>(copilot-dismiss)", opt)
+
+-- Suggest Copilot completion manually
+map("i", "<M-\\>", "<Plug>(copilot-suggest)", opt)
