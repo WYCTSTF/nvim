@@ -47,6 +47,20 @@ return   { -- Autocompletion
         end,
       },
       completion = { completeopt = 'menu,menuone,noinsert' },
+      
+      formatting = {
+        format = function(entry, vim_item)
+          -- Add source indicator
+          local source_names = {
+            nvim_lsp = '[LSP]',
+            luasnip = '[Snip]',
+            path = '[Path]',
+            lazydev = '[LazyDev]',
+          }
+          vim_item.menu = source_names[entry.source.name] or ('[' .. entry.source.name .. ']')
+          return vim_item
+        end,
+      },
 
       -- For an understanding of why these mappings were
       -- chosen, you will need to read `:help ins-completion`
@@ -62,16 +76,30 @@ return   { -- Autocompletion
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
 
-        -- Accept ([y]es) the completion.
-        --  This will auto-import if your LSP supports it.
-        --  This will expand snippets if the LSP sent a snippet.
-        ['<Tab>'] = cmp.mapping.confirm { select = true },
+        -- Accept LSP completion with Tab
+        ['<Tab>'] = cmp.mapping(function(fallback)
+          local entry = cmp.get_selected_entry()
+          if cmp.visible() and entry and entry.source.name == 'nvim_lsp' then
+            cmp.confirm { select = true }
+          elseif cmp.visible() then
+            cmp.select_next_item()
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
 
-        -- If you prefer more traditional completion keymaps,
-        -- you can uncomment the following lines
-        --['<CR>'] = cmp.mapping.confirm { select = true },
-        --['<Tab>'] = cmp.mapping.select_next_item(),
-        --['<S-Tab>'] = cmp.mapping.select_prev_item(),
+        -- Accept any other completion (snippet, path, etc.) with Ctrl+y  
+        ['<C-y>'] = cmp.mapping(function(fallback)
+          local entry = cmp.get_selected_entry()
+          if cmp.visible() and entry and entry.source.name ~= 'nvim_lsp' then
+            cmp.confirm { select = true }
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
+
+        -- General accept for any completion with Enter
+        ['<CR>'] = cmp.mapping.confirm { select = false },
 
         -- Manually trigger a completion from nvim-cmp.
         --  Generally you don't need this, because nvim-cmp will display
@@ -100,16 +128,17 @@ return   { -- Autocompletion
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
-      sources = {
+      sources = cmp.config.sources({
         {
           name = 'lazydev',
           -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
           group_index = 0,
         },
-        { name = 'nvim_lsp' },
-        { name = 'luasnip' },
-        { name = 'path' },
-      },
+        { name = 'nvim_lsp', priority = 1000 },
+        { name = 'luasnip', priority = 750 },
+      }, {
+        { name = 'path', priority = 250 },
+      }),
     }
   end,
 }
