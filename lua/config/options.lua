@@ -47,45 +47,39 @@ local function is_mac()
   return vim.fn.has('macunix') == 1
 end
 
--- 根据操作系统设置undodir
-if is_windows() then
-  set.undodir = vim.fn.expand("~/.vim/undodir")
-elseif is_mac() then
-  -- macOS系统，设置undodir路径
-  set.undodir = "/Users/syh/.vim/undodir"
-else
-  -- Linux系统，设置undodir路径
-  set.undodir = "/home/syh/.vim/undodir"
-end
+-- undodir:各平台统一用家目录下的通用位置
+local undodir = vim.fn.expand("~/.vim/undodir")
+set.undodir = undodir
+vim.fn.mkdir(undodir, "p") -- 目录不存在则创建
 
--- 根据操作系统设置Python路径
-if is_windows() then
-  -- Windows系统，尝试常见的Python路径
-  local python_paths = {
-    vim.fn.expand("D:/Program Files/miniconda/python.exe"),
-  }
-  
-  for _, path in ipairs(python_paths) do
-    if vim.fn.executable(path) == 1 then
-      vim.g.python3_host_prog = path
-      break
+-- Python 路径:优先取 PATH 里的 python(自动适配 conda/venv 等当前环境),
+-- 找不到再退回各平台的 conda 默认安装位置;都没有就不设置,交给 nvim 自行发现
+do
+  local py = vim.fn.exepath("python3")
+  if py == "" then
+    py = vim.fn.exepath("python")
+  end
+
+  if py == "" then
+    local fallbacks = {}
+    if is_windows() then
+      fallbacks = { vim.fn.expand("~/miniconda3/python.exe") }
+    elseif is_mac() then
+      fallbacks = { "/opt/homebrew/Caskroom/miniconda/base/bin/python" }
+    else
+      fallbacks = { vim.fn.expand("~/miniconda3/bin/python") }
+    end
+    for _, path in ipairs(fallbacks) do
+      if vim.fn.executable(path) == 1 then
+        py = path
+        break
+      end
     end
   end
-elseif is_mac() then
-  -- macOS系统
-  local python_paths = {
-    "/opt/homebrew/Caskroom/miniconda/base/bin/python",  -- 如果使用相同的conda环境
-  }
-  
-  for _, path in ipairs(python_paths) do
-    if vim.fn.executable(path) == 1 then
-      vim.g.python3_host_prog = path
-      break
-    end
+
+  if py ~= "" then
+    vim.g.python3_host_prog = py
   end
-else
-  -- Linux系统
-  vim.g.python3_host_prog = '/home/syh/miniconda3/bin/python'
 end
 
 -- set.clipboard='unnamedplus'

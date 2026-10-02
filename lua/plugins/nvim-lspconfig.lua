@@ -43,24 +43,28 @@ return {
       return vim.fn.has('macunix') == 1
     end
 
-    -- clangd：根据操作系统自定义二进制路径 & 启动参数
+    -- clangd：优先取 PATH 里的(自动适配各平台),PATH 上没有时
+    -- 再退回各平台已知的安装位置
     local clangd_config = {
       root_markers = { ".clangd", "compile_commands.json", ".git" },
     }
 
-    if is_windows() then
+    local clangd_exe = vim.fn.exepath("clangd")
+    if clangd_exe ~= "" then
+      clangd_config.cmd = { clangd_exe }
+    elseif is_windows() then
       clangd_config.cmd = {
         "D:/Program Files/llvm-mingw-20250528-ucrt-x86_64/bin/clangd.exe",
         "--query-driver=D:/Program Files/llvm-mingw-20250528-ucrt-x86_64/bin/clang*.exe",
         "--header-insertion=never", -- 禁用自动插入头文件
       }
     elseif is_mac() then
+      -- homebrew 的 llvm 是 keg-only,不在 PATH 上,需要显式路径
       clangd_config.cmd = {
         "/opt/homebrew/opt/llvm/bin/clangd",
         "--query-driver=/opt/homebrew/opt/llvm/bin/clang*",
       }
     else
-      -- 其他系统，使用系统默认路径
       clangd_config.cmd = { "clangd" }
     end
 
@@ -107,8 +111,9 @@ return {
         map("gI", builtin.lsp_implementations)
         map("<leader>rn", vim.lsp.buf.rename)
         map("<leader>ca", vim.lsp.buf.code_action)
-        map("gk", vim.diagnostic.goto_prev)
-        map("gj", vim.diagnostic.goto_next)
+        -- vim.diagnostic.goto_prev/goto_next 已弃用(0.13 移除),统一用 jump
+        map("gk", function() vim.diagnostic.jump({ count = -1, float = true }) end)
+        map("gj", function() vim.diagnostic.jump({ count = 1, float = true }) end)
 
         ----------------------------------------------------------------
         -- documentHighlight / inlay hints
