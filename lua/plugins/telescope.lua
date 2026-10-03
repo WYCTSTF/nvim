@@ -1,7 +1,9 @@
 return {
   'nvim-telescope/telescope.nvim',
   event = 'VimEnter',
-  branch = '0.1.x',
+  -- 用默认 master 分支:0.1.x 已停更,其 previewer 依赖 nvim-treesitter
+  -- 旧 master 分支的 configs/parsers API,与 treesitter main 分支(0.12 配套)不兼容
+  branch = 'master',
   dependencies = {
     'nvim-lua/plenary.nvim',
     {

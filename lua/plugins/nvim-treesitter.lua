@@ -45,11 +45,10 @@ return {
     vim.api.nvim_create_autocmd("FileType", {
       callback = function(args)
         local lang = vim.treesitter.language.get_lang(args.match)
-        if not lang or not pcall(vim.treesitter.get_parser, args.buf, lang) then
-          return
+        -- get_parser 在 0.12 改为返回 nil 而非抛错,守卫要包在 start 上
+        if lang and pcall(vim.treesitter.start, args.buf, lang) then
+          vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         end
-        vim.treesitter.start(args.buf, lang)
-        vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
       end,
     })
   end,

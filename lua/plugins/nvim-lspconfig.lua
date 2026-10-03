@@ -4,6 +4,7 @@ return {
 
   dependencies = {
     { "mason-org/mason.nvim",          opts = {} }, -- v2+
+    "hrsh7th/cmp-nvim-lsp", -- 供下方 vim.lsp.config("*") 合并 capabilities 用
     { "mason-org/mason-lspconfig.nvim", opts = {} }, -- 自动 enable LSP
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     { "j-hui/fidget.nvim", opts = {} },
@@ -19,6 +20,7 @@ return {
       ensure_installed = {
         -- LSP
         "lua_ls",
+        "jdtls",
         -- 其他 CLI 工具
         "stylua",
       },
@@ -28,9 +30,9 @@ return {
     -- 2. 全局 LSP 覆写（对所有服务器生效）
     ------------------------------------------------------------------
     vim.lsp.config("*", {
-      -- 示例：若用 cmp，可合并 capabilities
-      -- capabilities = require("cmp_nvim_lsp").default_capabilities(),
-      -- root_markers = { ".git" },
+      -- 合并 cmp 的 capabilities:不合并的话服务器认为客户端不支持 snippet/labelDetails,
+      -- 补全会降级成纯文本(上方已声明 cmp-nvim-lsp 依赖,保证此刻可 require)
+      capabilities = require("cmp_nvim_lsp").default_capabilities(),
     })    ------------------------------------------------------------------
     -- 3. 逐服务器配置
     ------------------------------------------------------------------
