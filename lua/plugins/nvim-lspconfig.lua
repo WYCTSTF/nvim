@@ -23,6 +23,7 @@ return {
         "jdtls",
         -- 其他 CLI 工具
         "stylua",
+        "tree-sitter-cli", -- nvim-treesitter main 分支编译 parser 依赖
       },
     }
 

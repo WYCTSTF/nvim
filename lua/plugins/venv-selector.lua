@@ -4,7 +4,7 @@ return {
   dependencies = {
     "neovim/nvim-lspconfig",
     "mfussenegger/nvim-dap", "mfussenegger/nvim-dap-python", --optional
-    { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
+    { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- branch 跟随 telescope.lua 的 master
   },
   branch = "main",
   -- 不自定义 search:插件自带按 OS 区分的默认搜索
